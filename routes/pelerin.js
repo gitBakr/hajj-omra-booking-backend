@@ -84,7 +84,7 @@ router.get('/test', (req, res) => {
 
 // Middleware d'authentification
 const isAdmin = (req, res, next) => {
-  const { email } = req.query;
+  const { email } = req.body;
   if (email !== ADMIN_EMAIL) {
     return res.status(403).json({ 
       message: "Accès non autorisé. Seul l'administrateur peut voir la liste complète." 
@@ -93,11 +93,11 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
-// GET - Route de base (protégée)
-router.get('/', isAdmin, async (req, res) => {
+// POST - Route pour lister les pèlerins (protégée)
+router.post('/list', isAdmin, async (req, res) => {
   try {
     console.log('📋 Récupération de tous les pèlerins');
-    console.log('👑 Accès administrateur:', req.query.email);
+    console.log('👑 Accès administrateur:', req.body.email);
     const pelerins = await Pelerin.find().sort({ dateInscription: -1 });
     console.log('✅ Nombre de pèlerins trouvés:', pelerins.length);
     res.json(pelerins);
