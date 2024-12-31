@@ -82,10 +82,22 @@ router.get('/test', (req, res) => {
   res.json({ message: 'Route de test OK' });
 });
 
-// GET - Route de base
-router.get('/', async (req, res) => {
+// Middleware d'authentification
+const isAdmin = (req, res, next) => {
+  const { email } = req.query;
+  if (email !== ADMIN_EMAIL) {
+    return res.status(403).json({ 
+      message: "Accès non autorisé. Seul l'administrateur peut voir la liste complète." 
+    });
+  }
+  next();
+};
+
+// GET - Route de base (protégée)
+router.get('/', isAdmin, async (req, res) => {
   try {
     console.log('📋 Récupération de tous les pèlerins');
+    console.log('👑 Accès administrateur:', req.query.email);
     const pelerins = await Pelerin.find().sort({ dateInscription: -1 });
     console.log('✅ Nombre de pèlerins trouvés:', pelerins.length);
     res.json(pelerins);
