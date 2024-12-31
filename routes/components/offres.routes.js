@@ -42,4 +42,51 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT - Modifier une offre
+router.put('/:id', async (req, res) => {
+  try {
+    console.log('📝 Modification de l\'offre:', req.params.id);
+    console.log('📄 Body reçu:', JSON.stringify(req.body, null, 2));
+
+    // Vérifier si l'offre existe
+    const offre = await Offre.findById(req.params.id);
+    if (!offre) {
+      return res.status(404).json({ message: "Offre non trouvée" });
+    }
+
+    // Mettre à jour les champs modifiables
+    if (req.body.titre) offre.titre = req.body.titre;
+    if (req.body.prix) offre.prix = req.body.prix;
+
+    // Sauvegarder les modifications
+    const updatedOffre = await offre.save();
+    console.log('✅ Offre modifiée:', JSON.stringify(updatedOffre, null, 2));
+    res.json(updatedOffre);
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// DELETE - Supprimer une offre
+router.delete('/:id', async (req, res) => {
+  try {
+    console.log('🗑️ Suppression de l\'offre:', req.params.id);
+
+    // Vérifier si l'offre existe
+    const offre = await Offre.findById(req.params.id);
+    if (!offre) {
+      return res.status(404).json({ message: "Offre non trouvée" });
+    }
+
+    // Supprimer l'offre
+    await Offre.findByIdAndDelete(req.params.id);
+    console.log('✅ Offre supprimée avec succès');
+    res.json({ message: "Offre supprimée avec succès" });
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router; 
