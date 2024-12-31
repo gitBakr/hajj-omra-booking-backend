@@ -1,7 +1,12 @@
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 @adminEmail = raouanedev@gmail.com
 
+# Pour le développement local
 ### Test de la route health
+GET {{baseUrl}}/health
+
+# Pour la production
+### Test de la route health (production)
 GET {{baseUrl}}/health
 
 ### Créer un nouveau pèlerin (sans adresse)
@@ -74,3 +79,59 @@ GET {{baseUrl}}/pelerin/test
 
 ### Nettoyage (bloqué en production)
 DELETE {{baseUrl}}/pelerin/clean 
+
+### Créer une nouvelle offre (admin)
+POST {{baseUrl}}/pelerin/offres
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "type": "hajj",
+    "titre": "Hajj 2024 - Pack Premium",
+    "description": "Voyage tout inclus pour le Hajj 2024",
+    "dateDepart": "2024-06-01",
+    "dateRetour": "2024-06-30",
+    "prix": 6500,
+    "places": {
+        "total": 50,
+        "disponibles": 50
+    },
+    "prestations": {
+        "hotel": {
+            "nom": "Swissotel Al Maqam Makkah",
+            "etoiles": 5,
+            "localisation": "Proche de la Grande Mosquée"
+        },
+        "vol": {
+            "compagnie": "Saudi Airlines",
+            "escales": 0
+        },
+        "transport": {
+            "type": "Bus climatisé",
+            "description": "Transferts entre les sites"
+        }
+    }
+}
+
+### Lister toutes les offres
+GET {{baseUrl}}/pelerin/offres
+
+### Modifier une offre (admin)
+PUT {{baseUrl}}/pelerin/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "prix": 7000,
+    "places": {
+        "disponibles": 45
+    }
+}
+
+### Supprimer une offre (admin)
+DELETE {{baseUrl}}/pelerin/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+} 
