@@ -19,26 +19,53 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     console.log('📝 Création d\'une nouvelle offre');
-    console.log('📄 Body reçu:', JSON.stringify(req.body, null, 2));
+    console.log('📄 Body reçu (brut):', req.body);
+    console.log('📄 Content-Type:', req.headers['content-type']);
+    console.log('📄 Body est un objet?', typeof req.body === 'object');
 
     // Validation simple
-    if (!req.body.titre || !req.body.prix) {
+    if (!req.body || typeof req.body !== 'object') {
       return res.status(400).json({ 
-        message: "Le titre et le prix sont requis" 
+        message: "Le body doit être un objet JSON valide",
+        reçu: req.body
       });
     }
 
+    console.log('📄 Titre reçu:', req.body.titre);
+    console.log('📄 Prix reçu:', req.body.prix);
+    console.log('📄 Type du prix:', typeof req.body.prix);
+
+    // Validation des champs
+    if (!req.body.titre || !req.body.prix) {
+      return res.status(400).json({ 
+        message: "Le titre et le prix sont requis",
+        reçu: {
+          titre: req.body.titre,
+          prix: req.body.prix
+        }
+      });
+    }
+
+    // Créer l'offre
     const offre = new Offre({
       titre: req.body.titre,
-      prix: req.body.prix
+      prix: Number(req.body.prix) // Convertir explicitement en nombre
     });
     
+    console.log('📄 Offre à sauvegarder:', offre);
     const savedOffre = await offre.save();
     console.log('✅ Offre créée:', JSON.stringify(savedOffre, null, 2));
     res.status(201).json(savedOffre);
   } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(400).json({ message: error.message });
+    console.error('❌ Erreur complète:', error);
+    console.error('❌ Message d\'erreur:', error.message);
+    if (error.errors) {
+      console.error('❌ Erreurs de validation:', error.errors);
+    }
+    res.status(400).json({ 
+      message: error.message,
+      details: error.errors
+    });
   }
 });
 

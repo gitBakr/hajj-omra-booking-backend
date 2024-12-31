@@ -80,14 +80,115 @@ GET {{baseUrl}}/pelerin/test
 ### Nettoyage (bloqué en production)
 DELETE {{baseUrl}}/pelerin/clean 
 
-### Lister toutes les offres
-GET {{baseUrl}}/offres
-
-### Créer une nouvelle offre
-POST {{baseUrl}}/offres
+### Créer une nouvelle offre (admin)
+POST {{baseUrl}}/pelerin/offres
 Content-Type: application/json
 
 {
-    "titre": "Hajj 2024 - Pack Simple",
+    "email": "{{adminEmail}}",
+    "type": "hajj",
+    "titre": "Hajj 2024 - Pack Premium",
+    "description": "Voyage tout inclus pour le Hajj 2024",
+    "dateDepart": "2024-06-01",
+    "dateRetour": "2024-06-30",
+    "prix": 6500,
+    "places": {
+        "total": 50,
+        "disponibles": 50
+    },
+    "prestations": {
+        "hotel": {
+            "nom": "Swissotel Al Maqam Makkah",
+            "etoiles": 5,
+            "localisation": "Proche de la Grande Mosquée"
+        },
+        "vol": {
+            "compagnie": "Saudi Airlines",
+            "escales": 0
+        },
+        "transport": {
+            "typeTransport": "Bus climatisé",
+            "description": "Transferts entre les sites"
+        }
+    }
+}
+
+### Créer une nouvelle offre (admin)
+POST {{baseUrl}}/pelerin/offres
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "type": "hajj",
+    "titre": "Hajj 2024 - Pack Premium",
+    "description": "Voyage tout inclus pour le Hajj 2024",
+    "dateDepart": "2024-06-01",
+    "dateRetour": "2024-06-30",
     "prix": 6500
+}
+
+### Modifier une offre (admin)
+PUT {{baseUrl}}/pelerin/offres/6774539ebd4b13ec51189e09
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "prix": 7000,
+    "prestations": {
+        "transport": {
+            "typeTransport": "Bus climatisé VIP",
+            "description": "Transferts entre les sites en bus VIP"
+        }
+    }
+}
+
+### 3. Modifier une offre (admin)
+PUT {{baseUrl}}/pelerin/offres/6774539ebd4b13ec51189e09
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "prix": 7000,
+    "places": {
+        "total": 50,
+        "disponibles": 45
+    },
+    "prestations": {
+        "hotel": {
+            "nom": "Swissotel Al Maqam Makkah",
+            "etoiles": 5,
+            "localisation": "Proche de la Grande Mosquée"
+        },
+        "vol": {
+            "compagnie": "Saudi Airlines",
+            "escales": 0
+        },
+        "transport": {
+            "typeTransport": "Bus climatisé VIP",
+            "description": "Transferts entre les sites en bus VIP"
+        }
+    }
+}
+
+### Lister toutes les offres
+GET {{baseUrl}}/pelerin/offres
+
+### Modifier une offre (admin)
+PUT {{baseUrl}}/pelerin/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "prix": 7000,
+    "places": {
+        "disponibles": 45
+    }
+}
+
+### Supprimer une offre (admin)
+DELETE {{baseUrl}}/pelerin/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
 } 

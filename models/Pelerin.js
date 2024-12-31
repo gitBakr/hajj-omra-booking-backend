@@ -29,19 +29,19 @@ const pelerinSchema = new mongoose.Schema({
   adresse: {
     numero: {
       type: String,
-     
+      required: false
     },
     rue: {
       type: String,
-     
+      required: false
     },
     ville: {
       type: String,
-     
+      required: false
     },
     codePostal: {
       type: String,
-      
+      required: false
     }
   },
   typePelerinage: {
