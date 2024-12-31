@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+const pelerinRoutes = require('./routes/pelerin');
 
 const app = express();
+const port = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors({
@@ -15,25 +17,24 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
-app.use(express.json());
 
-// Connexion MongoDB avec logs - sans options dépréciées
+app.use(express.json());
+app.use('/api/pelerins', pelerinRoutes);
+
+// Route de healthcheck
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Connexion MongoDB et démarrage du serveur
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ Connecté à MongoDB avec succès');
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`🚀 Serveur démarré sur le port ${port}`);
+    });
   })
   .catch(err => {
-    console.error('❌ Erreur de connexion MongoDB:', err.message);
-  });
-
-// Routes
-const pelerinRoutes = require('./routes/pelerin');
-app.use('/api/pelerins', pelerinRoutes);
-
-// Forcer le port 5001
-const PORT = 5001;
-
-// Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-}); 
+    console.error('❌ Erreur MongoDB:', err);
+    process.exit(1);
+  }); 
