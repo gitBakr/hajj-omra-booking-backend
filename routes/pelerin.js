@@ -5,16 +5,22 @@ const Pelerin = require('../models/Pelerin');
 // Configuration admin
 const ADMIN_EMAIL = 'raouanedev@gmail.com';
 
+console.log('🚀 Routes pèlerin chargées');
+
 // POST - Créer un nouveau pèlerin
 router.post('/', async (req, res) => {
   try {
     console.log('📝 Données reçues:', req.body);
     
-    // Vérifier si l'email existe déjà
-    const existingPelerin = await Pelerin.findOne({ email: req.body.email });
+    // Vérifier si la combinaison nom/prénom existe déjà
+    const existingPelerin = await Pelerin.findOne({ 
+      nom: req.body.nom,
+      prenom: req.body.prenom
+    });
+    
     if (existingPelerin) {
       return res.status(400).json({ 
-        message: `Un(e) pèlerin(e) est déjà enregistré(e) avec cet email.`
+        message: `Un(e) pèlerin(e) avec ce nom et prénom est déjà enregistré(e).`
       });
     }
 
@@ -64,6 +70,25 @@ router.delete('/clean', async (req, res) => {
     await Pelerin.deleteMany({});
     console.log('🧹 Base de données nettoyée');
     res.json({ message: 'Données supprimées avec succès' });
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// GET - Route de test
+router.get('/test', (req, res) => {
+  console.log('🧪 Route de test appelée');
+  res.json({ message: 'Route de test OK' });
+});
+
+// GET - Route de base
+router.get('/', async (req, res) => {
+  try {
+    console.log('📋 Récupération de tous les pèlerins');
+    const pelerins = await Pelerin.find().sort({ dateInscription: -1 });
+    console.log('✅ Nombre de pèlerins trouvés:', pelerins.length);
+    res.json(pelerins);
   } catch (error) {
     console.error('❌ Erreur:', error);
     res.status(500).json({ message: error.message });

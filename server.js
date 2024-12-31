@@ -23,8 +23,15 @@ app.use(cors({
 // Middleware pour parser le JSON
 app.use(express.json());
 
+// Avant la définition des routes
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.url}`);
+  next();
+});
+
 // Routes
-app.use('/api/pelerins', pelerinRoutes);
+// app.use('/api/pelerins', pelerinRoutes);
+app.use('/pelerin', pelerinRoutes);
 
 // Route de healthcheck
 app.get('/health', (req, res) => {
