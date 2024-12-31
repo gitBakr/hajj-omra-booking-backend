@@ -1,0 +1,76 @@
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+@adminEmail = raouanedev@gmail.com
+
+### Test de la route health
+GET {{baseUrl}}/health
+
+### Créer un nouveau pèlerin (sans adresse)
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "nationalite": "Française",
+    "telephone": "+33612345678",
+    "email": "jean.dupont@example.com",
+    "typePelerinage": "hajj",
+    "dateDepart": "2024-07-01",
+    "besoinsSpeciaux": "Aucun",
+    "chambre": {
+        "type": "double",
+        "supplement": 0
+    }
+}
+
+### Créer un nouveau pèlerin (avec adresse)
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "Mme",
+    "nom": "Martin",
+    "prenom": "Sophie",
+    "nationalite": "Française",
+    "telephone": "+33687654321",
+    "email": "sophie.martin@example.com",
+    "adresse": {
+        "numero": "42",
+        "rue": "Rue de la Paix",
+        "ville": "Paris",
+        "codePostal": "75001"
+    },
+    "typePelerinage": "omra",
+    "dateDepart": "2024-08-15",
+    "besoinsSpeciaux": "Régime sans gluten",
+    "chambre": {
+        "type": "double",
+        "supplement": 100
+    }
+}
+
+### Rechercher un pèlerin par email
+GET {{baseUrl}}/pelerin/search?email=jean.dupont@example.com
+
+### Liste complète (admin)
+POST {{baseUrl}}/pelerin/list
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### Statistiques (admin)
+POST {{baseUrl}}/pelerin/stats
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### Route de test
+GET {{baseUrl}}/pelerin/test
+
+### Nettoyage (bloqué en production)
+DELETE {{baseUrl}}/pelerin/clean 
