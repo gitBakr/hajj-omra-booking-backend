@@ -8,6 +8,77 @@ const ADMIN_EMAIL = 'raouanedev@gmail.com';
 
 console.log('🚀 Routes pèlerin chargées');
 
+// Middleware d'authentification pour les routes protégées
+const isAdmin = (req, res, next) => {
+  const { email } = req.body;
+  if (email !== ADMIN_EMAIL) {
+    return res.status(403).json({ 
+      message: "Accès non autorisé. Seul l'administrateur peut voir la liste complète." 
+    });
+  }
+  next();
+};
+
+// Routes pour les offres (sans vérification admin)
+const offresRouter = express.Router();
+
+// GET - Liste des offres
+offresRouter.get('/', async (req, res) => {
+  try {
+    console.log('📋 Récupération des offres');
+    const offres = await Offre.find().sort({ dateCreation: -1 });
+    console.log('✅ Nombre d\'offres trouvées:', offres.length);
+    res.json(offres);
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST - Créer une nouvelle offre (simplifié, sans vérification admin)
+offresRouter.post('/', async (req, res) => {
+  try {
+    console.log('📝 Création d\'une nouvelle offre');
+    console.log('📄 Body reçu:', JSON.stringify(req.body, null, 2));
+
+    // Validation simple
+    if (!req.body.titre || !req.body.prix) {
+      return res.status(400).json({ 
+        message: "Le titre et le prix sont requis" 
+      });
+    }
+
+    const offre = new Offre({
+      titre: req.body.titre,
+      prix: req.body.prix
+    });
+    
+    const savedOffre = await offre.save();
+    console.log('✅ Offre créée:', JSON.stringify(savedOffre, null, 2));
+    res.status(201).json(savedOffre);
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Monter le routeur des offres AVANT les autres middlewares
+router.use('/offres', offresRouter);
+
+// Middleware de débogage pour les autres routes
+router.use((req, res, next) => {
+  if (!req.path.startsWith('/offres')) {
+    console.log('🔍 Route appelée:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      query: req.query,
+      body: req.body
+    });
+  }
+  next();
+});
+
 // POST - Créer un nouveau pèlerin
 router.post('/', async (req, res) => {
   try {
@@ -83,17 +154,6 @@ router.get('/test', (req, res) => {
   res.json({ message: 'Route de test OK' });
 });
 
-// Middleware d'authentification
-const isAdmin = (req, res, next) => {
-  const { email } = req.body;
-  if (email !== ADMIN_EMAIL) {
-    return res.status(403).json({ 
-      message: "Accès non autorisé. Seul l'administrateur peut voir la liste complète." 
-    });
-  }
-  next();
-};
-
 // POST - Route pour lister les pèlerins (protégée)
 router.post('/list', isAdmin, async (req, res) => {
   try {
@@ -157,73 +217,6 @@ router.post('/stats', isAdmin, async (req, res) => {
 
     console.log('✅ Statistiques calculées:', stats);
     res.json(stats);
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// POST - Créer une nouvelle offre (admin uniquement)
-router.post('/offres', isAdmin, async (req, res) => {
-  try {
-    console.log('📝 Création d\'une nouvelle offre');
-    const { email, ...offreData } = req.body;
-    console.log('👑 Accès administrateur:', email);
-    console.log('📄 Données de l\'offre:', offreData);
-    
-    const offre = new Offre(offreData);
-    const savedOffre = await offre.save();
-    
-    console.log('✅ Offre créée:', savedOffre);
-    res.status(201).json(savedOffre);
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// GET - Liste des offres (public)
-router.get('/offres', async (req, res) => {
-  try {
-    console.log('📋 Récupération des offres');
-    const offres = await Offre.find({ statut: 'active' }).sort({ dateCreation: -1 });
-    console.log('✅ Nombre d\'offres trouvées:', offres.length);
-    res.json(offres);
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// PUT - Modifier une offre (admin uniquement)
-router.put('/offres/:id', isAdmin, async (req, res) => {
-  try {
-    console.log('✏️ Modification de l\'offre:', req.params.id);
-    
-    // Extraire email du body et créer une copie sans email
-    const { email, ...updateData } = req.body;
-    
-    const offre = await Offre.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    );
-    
-    console.log('✅ Offre mise à jour:', offre);
-    res.json(offre);
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// DELETE - Supprimer une offre (admin uniquement)
-router.delete('/offres/:id', isAdmin, async (req, res) => {
-  try {
-    console.log('🗑️ Suppression de l\'offre:', req.params.id);
-    await Offre.findByIdAndDelete(req.params.id);
-    console.log('✅ Offre supprimée');
-    res.json({ message: 'Offre supprimée avec succès' });
   } catch (error) {
     console.error('❌ Erreur:', error);
     res.status(500).json({ message: error.message });

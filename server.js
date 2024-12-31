@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const pelerinRoutes = require('./routes/pelerin');
+const offresRoutes = require('./routes/offres');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 // Routes
 // app.use('/api/pelerins', pelerinRoutes);
 app.use('/pelerin', pelerinRoutes);
+app.use('/offres', offresRoutes);
 
 // Route de healthcheck
 app.get('/health', (req, res) => {
