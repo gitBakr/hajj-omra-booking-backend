@@ -7,18 +7,23 @@ const pelerinRoutes = require('./routes/pelerin');
 const app = express();
 const port = process.env.PORT || 8080;
 
-// Middleware
+// Configuration CORS
 app.use(cors({
   origin: [
+    'https://hajj-omra-booking-frontend.onrender.com',
     'https://hajj-omra-booking-1.onrender.com',
     'http://localhost:5173',
     'http://localhost:3000'
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Middleware pour parser le JSON
 app.use(express.json());
+
+// Routes
 app.use('/api/pelerins', pelerinRoutes);
 
 // Route de healthcheck
