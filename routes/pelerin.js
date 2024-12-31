@@ -121,6 +121,18 @@ router.post('/stats', isAdmin, async (req, res) => {
     const hommesCount = await Pelerin.countDocuments({ civilite: 'M.' });
     const femmesCount = await Pelerin.countDocuments({ civilite: { $in: ['Mme', 'Mlle'] } });
 
+    // Statistiques par ville
+    const villes = await Pelerin.aggregate([
+      { $group: { _id: '$adresse.ville', count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
+
+    // Statistiques par type de chambre
+    const chambres = await Pelerin.aggregate([
+      { $group: { _id: '$chambre.type', count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
+
     const stats = {
       pelerinages: {
         hajj: hajjCount,
@@ -131,7 +143,15 @@ router.post('/stats', isAdmin, async (req, res) => {
         hommes: hommesCount,
         femmes: femmesCount,
         total: hommesCount + femmesCount
-      }
+      },
+      villes: villes.map(v => ({
+        ville: v._id,
+        nombre: v.count
+      })),
+      chambres: chambres.map(c => ({
+        type: c._id || 'Non spécifié',
+        nombre: c.count
+      }))
     };
 
     console.log('✅ Statistiques calculées:', stats);
