@@ -2,8 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const pelerinRoutes = require('./routes/pelerin');
-const offresRoutes = require('./routes/offres');
+const pelerinRoutes = require('./routes/components/pelerin.routes');
+const offresRoutes = require('./routes/components/offres.routes');
+const adminRoutes = require('./routes/components/admin.routes');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -31,9 +32,9 @@ app.use((req, res, next) => {
 });
 
 // Routes
-// app.use('/api/pelerins', pelerinRoutes);
-app.use('/pelerin', pelerinRoutes);
 app.use('/offres', offresRoutes);
+app.use('/pelerin', pelerinRoutes);
+app.use('/admin', adminRoutes);
 
 // Route de healthcheck
 app.get('/health', (req, res) => {
