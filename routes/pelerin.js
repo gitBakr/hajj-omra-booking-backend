@@ -107,4 +107,39 @@ router.post('/list', isAdmin, async (req, res) => {
   }
 });
 
+// POST - Route pour obtenir les statistiques (protégée admin)
+router.post('/stats', isAdmin, async (req, res) => {
+  try {
+    console.log('📊 Calcul des statistiques');
+    console.log('👑 Accès administrateur:', req.body.email);
+
+    // Statistiques par type de pèlerinage
+    const hajjCount = await Pelerin.countDocuments({ typePelerinage: 'hajj' });
+    const omraCount = await Pelerin.countDocuments({ typePelerinage: 'omra' });
+
+    // Statistiques par civilité
+    const hommesCount = await Pelerin.countDocuments({ civilite: 'M.' });
+    const femmesCount = await Pelerin.countDocuments({ civilite: { $in: ['Mme', 'Mlle'] } });
+
+    const stats = {
+      pelerinages: {
+        hajj: hajjCount,
+        omra: omraCount,
+        total: hajjCount + omraCount
+      },
+      genre: {
+        hommes: hommesCount,
+        femmes: femmesCount,
+        total: hommesCount + femmesCount
+      }
+    };
+
+    console.log('✅ Statistiques calculées:', stats);
+    res.json(stats);
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router; 
