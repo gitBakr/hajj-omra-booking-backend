@@ -27,22 +27,10 @@ const pelerinSchema = new mongoose.Schema({
     required: true
   },
   adresse: {
-    numero: {
-      type: String,
-      required: false
-    },
-    rue: {
-      type: String,
-      required: false
-    },
-    ville: {
-      type: String,
-      required: false
-    },
-    codePostal: {
-      type: String,
-      required: false
-    }
+    numero: String,
+    rue: String,
+    ville: String,
+    codePostal: String
   },
   typePelerinage: {
     type: String,
@@ -51,7 +39,7 @@ const pelerinSchema = new mongoose.Schema({
   },
   dateDepart: {
     type: String,
-    required: true
+    required: false
   },
   besoinsSpeciaux: String,
   chambre: {
