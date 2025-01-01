@@ -2,7 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Offre = require('../../models/Offre');
 
-// GET - Liste des offres
+// Middleware d'authentification admin
+const isAdmin = (req, res, next) => {
+  const { email } = req.body;
+  if (email !== process.env.ADMIN_EMAIL) {
+    return res.status(403).json({ message: "Accès non autorisé" });
+  }
+  next();
+};
+
+// GET - Liste des offres (public)
 router.get('/', async (req, res) => {
   try {
     console.log('Liste des offres');
@@ -15,22 +24,30 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST - Creer une nouvelle offre
-router.post('/', async (req, res) => {
+// POST - Creer une nouvelle offre (admin seulement)
+router.post('/', isAdmin, async (req, res) => {
   try {
     console.log('Creation d\'une nouvelle offre');
     console.log('Body recu:', JSON.stringify(req.body, null, 2));
 
-    // Validation simple
-    if (!req.body.titre || !req.body.prix) {
+    // Validation
+    if (!req.body.titre || !req.body.prix || !req.body.type) {
       return res.status(400).json({ 
-        message: "Le titre et le prix sont requis" 
+        message: "Le titre, le prix et le type sont requis" 
+      });
+    }
+
+    // Validation du type
+    if (!['hajj', 'omra'].includes(req.body.type)) {
+      return res.status(400).json({ 
+        message: "Le type doit être 'hajj' ou 'omra'" 
       });
     }
 
     const offre = new Offre({
       titre: req.body.titre,
-      prix: req.body.prix
+      prix: req.body.prix,
+      type: req.body.type
     });
     
     const savedOffre = await offre.save();
@@ -42,23 +59,21 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT - Modifier une offre
-router.put('/:id', async (req, res) => {
+// PUT - Modifier une offre (admin seulement)
+router.put('/:id', isAdmin, async (req, res) => {
   try {
     console.log('Modification de l\'offre:', req.params.id);
     console.log('Body recu:', JSON.stringify(req.body, null, 2));
 
-    // Verifier si l'offre existe
     const offre = await Offre.findById(req.params.id);
     if (!offre) {
       return res.status(404).json({ message: "Offre non trouvee" });
     }
 
-    // Mettre a jour les champs modifiables
     if (req.body.titre) offre.titre = req.body.titre;
     if (req.body.prix) offre.prix = req.body.prix;
+    if (req.body.type) offre.type = req.body.type;
 
-    // Sauvegarder les modifications
     const updatedOffre = await offre.save();
     console.log('Offre modifiee:', JSON.stringify(updatedOffre, null, 2));
     res.json(updatedOffre);
@@ -68,18 +83,16 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE - Supprimer une offre
-router.delete('/:id', async (req, res) => {
+// DELETE - Supprimer une offre (admin seulement)
+router.delete('/:id', isAdmin, async (req, res) => {
   try {
     console.log('Suppression de l\'offre:', req.params.id);
 
-    // Verifier si l'offre existe
     const offre = await Offre.findById(req.params.id);
     if (!offre) {
       return res.status(404).json({ message: "Offre non trouvee" });
     }
 
-    // Supprimer l'offre
     await Offre.findByIdAndDelete(req.params.id);
     console.log('Offre supprimee avec succes');
     res.json({ message: "Offre supprimee avec succes" });

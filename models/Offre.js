@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const offreSchema = new mongoose.Schema({
   titre: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   prix: {
     type: Number,
-    required: true,
-    min: 0
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['hajj', 'omra'],
+    required: true
   },
   dateCreation: {
     type: Date,

@@ -45,6 +45,7 @@ app.get('/health', (req, res) => {
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ Connecté à MongoDB avec succès');
+    console.log('Admin email configuré:', process.env.ADMIN_EMAIL);
     app.listen(port, '0.0.0.0', () => {
       console.log(`🚀 Serveur démarré sur le port ${port}`);
     });

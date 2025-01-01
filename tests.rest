@@ -1,27 +1,65 @@
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 @adminEmail = raouanedev@gmail.com
 
-# Pour le développement local
-### Test de la route health
-GET {{baseUrl}}/health
+### ========== OFFRES ==========
 
-# Pour la production
-### Test de la route health (production)
-GET {{baseUrl}}/health
+### Liste des offres (GET - public)
+GET {{baseUrl}}/offres
 
-### Créer un nouveau pèlerin (sans adresse)
+### Créer une offre (POST - admin)
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "titre": "Hajj 2024 - Pack Standard",
+    "prix": 6000,
+    "type": "hajj"
+}
+
+### Modifier une offre (PUT - admin)
+PUT {{baseUrl}}/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "titre": "Hajj 2024 - Pack Standard (Modifie)",
+    "prix": 6500,
+    "type": "hajj"
+}
+
+### Supprimer une offre (DELETE - admin)
+DELETE {{baseUrl}}/offres/OFFRE_ID
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### ========== RÉSERVATIONS ==========
+
+### Rechercher les réservations par email
+GET {{baseUrl}}/pelerin/search?email=raouanedev@gmail.com
+
+### Créer une nouvelle réservation
 POST {{baseUrl}}/pelerin
 Content-Type: application/json
 
 {
     "civilite": "M.",
-    "nom": "Dupont",
-    "prenom": "Jean",
+    "nom": "Doe",
+    "prenom": "John",
     "nationalite": "Française",
-    "telephone": "+33612345678",
-    "email": "jean.dupont@example.com",
+    "telephone": "0612345678",
+    "email": "john.doe@example.com",
+    "adresse": {
+        "numero": "123",
+        "rue": "Rue Example",
+        "ville": "Paris",
+        "codePostal": "75001"
+    },
     "typePelerinage": "hajj",
-    "dateDepart": "2024-07-01",
+    "dateDepart": "2024-06-15",
     "besoinsSpeciaux": "Aucun",
     "chambre": {
         "type": "double",
@@ -29,37 +67,10 @@ Content-Type: application/json
     }
 }
 
-### Créer un nouveau pèlerin (avec adresse)
-POST {{baseUrl}}/pelerin
-Content-Type: application/json
+### ========== ADMIN ==========
 
-{
-    "civilite": "Mme",
-    "nom": "Martin",
-    "prenom": "Sophie",
-    "nationalite": "Française",
-    "telephone": "+33687654321",
-    "email": "sophie.martin@example.com",
-    "adresse": {
-        "numero": "42",
-        "rue": "Rue de la Paix",
-        "ville": "Paris",
-        "codePostal": "75001"
-    },
-    "typePelerinage": "omra",
-    "dateDepart": "2024-08-15",
-    "besoinsSpeciaux": "Régime sans gluten",
-    "chambre": {
-        "type": "double",
-        "supplement": 100
-    }
-}
-
-### Rechercher un pèlerin par email
-GET {{baseUrl}}/pelerin/search?email=jean.dupont@example.com
-
-### Liste complète (admin)
-POST {{baseUrl}}/pelerin/list
+### Liste des pèlerins (admin)
+POST {{baseUrl}}/admin/list
 Content-Type: application/json
 
 {
@@ -67,128 +78,14 @@ Content-Type: application/json
 }
 
 ### Statistiques (admin)
-POST {{baseUrl}}/pelerin/stats
+POST {{baseUrl}}/admin/stats
 Content-Type: application/json
 
 {
     "email": "{{adminEmail}}"
 }
 
-### Route de test
-GET {{baseUrl}}/pelerin/test
+### ========== HEALTH CHECK ==========
 
-### Nettoyage (bloqué en production)
-DELETE {{baseUrl}}/pelerin/clean 
-
-### Créer une nouvelle offre (admin)
-POST {{baseUrl}}/pelerin/offres
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}",
-    "type": "hajj",
-    "titre": "Hajj 2024 - Pack Premium",
-    "description": "Voyage tout inclus pour le Hajj 2024",
-    "dateDepart": "2024-06-01",
-    "dateRetour": "2024-06-30",
-    "prix": 6500,
-    "places": {
-        "total": 50,
-        "disponibles": 50
-    },
-    "prestations": {
-        "hotel": {
-            "nom": "Swissotel Al Maqam Makkah",
-            "etoiles": 5,
-            "localisation": "Proche de la Grande Mosquée"
-        },
-        "vol": {
-            "compagnie": "Saudi Airlines",
-            "escales": 0
-        },
-        "transport": {
-            "typeTransport": "Bus climatisé",
-            "description": "Transferts entre les sites"
-        }
-    }
-}
-
-### Créer une nouvelle offre (admin)
-POST {{baseUrl}}/pelerin/offres
-Content-Type: application/json
-
-{
-    "email": "raouanedev@gmail.com",
-    "type": "hajj",
-    "titre": "Hajj 2024 - Pack Premium",
-    "description": "Voyage tout inclus pour le Hajj 2024",
-    "dateDepart": "2024-06-01",
-    "dateRetour": "2024-06-30",
-    "prix": 6500
-}
-
-### Modifier une offre (admin)
-PUT {{baseUrl}}/pelerin/offres/6774539ebd4b13ec51189e09
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}",
-    "prix": 7000,
-    "prestations": {
-        "transport": {
-            "typeTransport": "Bus climatisé VIP",
-            "description": "Transferts entre les sites en bus VIP"
-        }
-    }
-}
-
-### 3. Modifier une offre (admin)
-PUT {{baseUrl}}/pelerin/offres/6774539ebd4b13ec51189e09
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}",
-    "prix": 7000,
-    "places": {
-        "total": 50,
-        "disponibles": 45
-    },
-    "prestations": {
-        "hotel": {
-            "nom": "Swissotel Al Maqam Makkah",
-            "etoiles": 5,
-            "localisation": "Proche de la Grande Mosquée"
-        },
-        "vol": {
-            "compagnie": "Saudi Airlines",
-            "escales": 0
-        },
-        "transport": {
-            "typeTransport": "Bus climatisé VIP",
-            "description": "Transferts entre les sites en bus VIP"
-        }
-    }
-}
-
-### Lister toutes les offres
-GET {{baseUrl}}/pelerin/offres
-
-### Modifier une offre (admin)
-PUT {{baseUrl}}/pelerin/offres/OFFRE_ID
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}",
-    "prix": 7000,
-    "places": {
-        "disponibles": 45
-    }
-}
-
-### Supprimer une offre (admin)
-DELETE {{baseUrl}}/pelerin/offres/OFFRE_ID
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}"
-} 
+### Vérifier que le serveur est en ligne
+GET {{baseUrl}}/health 
