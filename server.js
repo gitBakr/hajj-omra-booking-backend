@@ -19,8 +19,8 @@ app.use(cors({
     'http://localhost:8080',
     'http://localhost:5000'
   ],
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
