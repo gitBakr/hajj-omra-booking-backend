@@ -47,10 +47,10 @@ router.post('/', async (req, res) => {
     // Log résultat
     console.log('📧 Résultat envoi:', emailResult);
 
-    res.status(201).json({
+    res.status(emailResult.success ? 201 : 207).json({
       pelerin: savedPelerin,
       emailSent: emailResult.success,
-      emailError: emailResult.error
+      emailError: emailResult.error || null
     });
   } catch (error) {
     console.error('❌ Erreur complète:', error);
