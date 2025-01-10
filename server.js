@@ -12,6 +12,7 @@ const port = process.env.PORT || 8080;
 // Configuration CORS
 app.use(cors({
   origin: [
+    'https://raouane-hajj-omra.onrender.com',
     'https://hajj-omra-booking-frontend.onrender.com',
     'https://hajj-omra-booking-1.onrender.com',
     'http://localhost:5173',
@@ -21,7 +22,7 @@ app.use(cors({
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
 // Middleware pour parser le JSON
