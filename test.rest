@@ -1,0 +1,112 @@
+### Variables globales
+@baseUrl = http://localhost:5000
+
+### Test de santé du serveur
+GET {{baseUrl}}/health
+
+### 1. Créer une réservation (test minimal)
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Test",
+    "prenom": "User",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "email": "test@example.com",
+    "typePelerinage": "hajj"
+}
+
+### 2. Créer une réservation (test complet)
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Test Complet",
+    "prenom": "User",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "email": "test.complet@example.com",
+    "typePelerinage": "hajj",
+    "adresse": {
+        "numero": "123",
+        "rue": "Rue Test",
+        "ville": "Paris",
+        "codePostal": "75001"
+    },
+    "besoinsSpeciaux": "Régime sans gluten",
+    "chambre": {
+        "type": "quadruple",
+        "supplement": 0
+    }
+}
+
+### 3. Rechercher les réservations par email
+GET {{baseUrl}}/pelerin/search?email=test@example.com
+
+### Test Nodemailer - Email Standard
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Test Nodemailer",
+    "data": {
+        "civilite": "M.",
+        "nom": "Raouane",
+        "prenom": "Mohamed",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "Hajj",
+        "dateDepart": "Du 01 Mai au 20 Juin 2025",
+        "chambre": {
+            "type": "quadruple"
+        },
+        "_id": "TEST-001"
+    }
+}
+
+### Test Nodemailer - Réservation Double
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Réservation Double",
+    "data": {
+        "civilite": "M.",
+        "nom": "Raouane",
+        "prenom": "Mohamed",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "Hajj",
+        "dateDepart": "Du 01 Mai au 20 Juin 2025",
+        "chambre": {
+            "type": "double",
+            "supplement": 200
+        },
+        "_id": "TEST-002"
+    }
+}
+
+### Test Nodemailer - Besoins Spéciaux
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Réservation avec Besoins Spéciaux",
+    "data": {
+        "civilite": "Mme",
+        "nom": "Test",
+        "prenom": "Fatima",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "Omra",
+        "dateDepart": "Du 15 Février au 01 Mars 2025",
+        "chambre": {
+            "type": "triple"
+        },
+        "besoinsSpeciaux": "Régime sans gluten, Fauteuil roulant",
+        "_id": "TEST-003"
+    }
+} 
