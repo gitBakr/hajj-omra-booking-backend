@@ -6,8 +6,15 @@ const { sendConfirmationEmail } = require('../../services/emailService');
 // POST - Créer un nouveau pèlerin
 router.post('/', async (req, res) => {
   try {
-    console.log('📝 Données reçues:', req.body);
+    console.log('📝 Données reçues:', JSON.stringify(req.body, null, 2));
     
+    // Log configuration email
+    console.log('📧 Configuration email:', {
+      user: process.env.GMAIL_USER,
+      hasPassword: !!process.env.GMAIL_APP_PASSWORD,
+      mode: process.env.NODE_ENV
+    });
+
     const existingPelerin = await Pelerin.findOne({ 
       $and: [
         { nom: req.body.nom },
@@ -25,18 +32,28 @@ router.post('/', async (req, res) => {
     const pelerin = new Pelerin(req.body);
     const savedPelerin = await pelerin.save();
     
-    // Envoi de l'email de confirmation
-    const emailResult = await sendConfirmationEmail(savedPelerin);
-    
-    console.log('✅ Pèlerin enregistré:', savedPelerin);
-    console.log('📧 Statut email:', emailResult.success ? 'Envoyé' : 'Échec');
-    
+    // Log données email
+    console.log('📧 Données email:', {
+      to: savedPelerin.email,
+      type: savedPelerin.typePelerinage,
+      offre: req.body.offreDetails
+    });
+
+    const emailResult = await sendConfirmationEmail({
+      ...savedPelerin.toObject(),
+      offreDetails: req.body.offreDetails
+    });
+
+    // Log résultat
+    console.log('📧 Résultat envoi:', emailResult);
+
     res.status(201).json({
       pelerin: savedPelerin,
-      emailSent: emailResult.success
+      emailSent: emailResult.success,
+      emailError: emailResult.error
     });
   } catch (error) {
-    console.error('❌ Erreur:', error);
+    console.error('❌ Erreur complète:', error);
     res.status(400).json({ message: error.message });
   }
 });
@@ -88,26 +105,19 @@ router.post('/send-email', async (req, res) => {
 // Ajouter cette nouvelle route pour tester nodemailer
 router.post('/send-email-nodemailer', async (req, res) => {
   try {
-    const { to, subject, data } = req.body;
+    console.log('📥 POST /pelerin/send-email-nodemailer');
+    console.log('📦 Données reçues:', req.body);
     
-    const emailResult = await sendConfirmationEmail({
-      civilite: data.civilite,
-      nom: data.nom,
-      prenom: data.prenom,
-      email: to,
-      typePelerinage: data.typePelerinage,
-      dateDepart: data.dateDepart,
-      chambre: data.chambre,
-      _id: data._id
-    });
+    const { to, subject, data } = req.body;
+    const emailResult = await sendConfirmationEmail(data);
 
     if (emailResult.success) {
-      res.json({ message: "Email envoyé avec succès via Nodemailer" });
+      res.json({ message: "Email envoyé avec succès" });
     } else {
-      res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+      res.status(500).json({ message: "Erreur lors de l'envoi de l'email", error: emailResult.error });
     }
   } catch (error) {
-    console.error('❌ Erreur envoi email:', error);
+    console.error('❌ Erreur route email:', error);
     res.status(500).json({ message: error.message });
   }
 });

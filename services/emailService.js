@@ -11,21 +11,32 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Test la connexion
+// Test la connexion au démarrage du serveur
 transporter.verify((error, success) => {
     if (error) {
-        console.error('❌ Erreur SMTP:', error);
+        console.error('❌ Erreur SMTP au démarrage:', {
+            error: error.message,
+            env: process.env.NODE_ENV,
+            hasUser: !!process.env.GMAIL_USER,
+            hasPassword: !!process.env.GMAIL_APP_PASSWORD
+        });
     } else {
-        console.log('✅ Serveur SMTP prêt');
+        console.log('✅ Serveur SMTP prêt:', {
+            env: process.env.NODE_ENV,
+            user: process.env.GMAIL_USER,
+            hasPassword: !!process.env.GMAIL_APP_PASSWORD
+        });
     }
 });
 
 const sendConfirmationEmail = async (reservationData) => {
     try {
-        console.log('📧 Données reçues:', {
-            type: reservationData.typePelerinage,
-            offre: reservationData.offreDetails,
-            email: reservationData.email
+        console.log('📧 Données complètes reçues:', JSON.stringify(reservationData, null, 2));
+        console.log('📧 Configuration SMTP:', {
+            host: transporter.options.host,
+            port: transporter.options.port,
+            secure: transporter.options.secure,
+            hasAuth: !!transporter.options.auth
         });
 
         console.log('📧 Début envoi email...');
@@ -73,7 +84,16 @@ const sendConfirmationEmail = async (reservationData) => {
         console.error('❌ Erreur détaillée:', {
             message: error.message,
             code: error.code,
-            response: error.response
+            response: error.response,
+            stack: error.stack,
+            config: {
+                host: transporter.options.host,
+                port: transporter.options.port,
+                secure: transporter.options.secure,
+                hasAuth: !!transporter.options.auth,
+                user: process.env.GMAIL_USER,
+                hasPassword: !!process.env.GMAIL_APP_PASSWORD
+            }
         });
         return { success: false, error: error.message };
     }
