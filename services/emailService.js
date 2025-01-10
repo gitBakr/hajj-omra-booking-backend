@@ -22,6 +22,12 @@ transporter.verify((error, success) => {
 
 const sendConfirmationEmail = async (reservationData) => {
     try {
+        console.log('📧 Données reçues:', {
+            type: reservationData.typePelerinage,
+            offre: reservationData.offreDetails,
+            email: reservationData.email
+        });
+
         console.log('📧 Début envoi email...');
         console.log('📧 Mode:', process.env.NODE_ENV);
         console.log('📧 Destinataire:', reservationData.email);

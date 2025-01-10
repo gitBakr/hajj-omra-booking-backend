@@ -110,4 +110,28 @@ Content-Type: application/json
         "besoinsSpeciaux": "Régime sans gluten, Fauteuil roulant",
         "_id": "TEST-003"
     }
+}
+
+### Test Nodemailer avec détails d'offre
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Test Offre Hajj",
+    "data": {
+        "civilite": "M.",
+        "nom": "Test",
+        "prenom": "Offre",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "Hajj",
+        "offreDetails": {
+            "titre": "Hajj 2024",
+            "prix": 6500,
+            "duree": "21 jours",
+            "dateDepart": "Mai 2024",
+            "description": "Accomplissez le cinquième pilier de l'Islam avec sérénité"
+        },
+        "_id": "TEST-OFFRE-001"
+    }
 } 
