@@ -32,49 +32,23 @@ const sendConfirmationEmail = async (reservationData) => {
             subject: `Confirmation de réservation - ${reservationData.typePelerinage.toUpperCase()}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="color: #2c3e50;">Confirmation de Réservation</h1>
-                        <p style="color: #7f8c8d;">Numéro de réservation : ${reservationData._id}</p>
-                    </div>
+                    <h1 style="color: #2c3e50;">Confirmation de réservation - ${reservationData.typePelerinage}</h1>
+                    <p>Bonjour ${reservationData.civilite} ${reservationData.nom} ${reservationData.prenom},</p>
+                    
+                    <p>Nous avons bien reçu votre inscription pour le voyage suivant :</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 10px 0;"><strong>Type :</strong> ${reservationData.typePelerinage}</li>
+                        <li style="margin: 10px 0;"><strong>Offre :</strong> ${reservationData.offreDetails?.titre || 'Non spécifié'}</li>
+                        <li style="margin: 10px 0;"><strong>Prix indicatif :</strong> ${reservationData.offreDetails?.prix || 'Non spécifié'}€</li>
+                        <li style="margin: 10px 0;"><strong>Durée :</strong> ${reservationData.offreDetails?.duree || 'Non spécifié'}</li>
+                        <li style="margin: 10px 0;"><strong>Départ prévu :</strong> ${reservationData.offreDetails?.dateDepart || 'Non spécifié'}</li>
+                    </ul>
 
-                    <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
-                        <p>Cher/Chère ${reservationData.civilite} ${reservationData.nom} ${reservationData.prenom},</p>
-                        <p>Nous avons le plaisir de confirmer votre réservation pour le pèlerinage suivant :</p>
-                    </div>
-
-                    <div style="background: #ffffff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
-                        <h2 style="color: #2c3e50; font-size: 18px;">Détails de votre voyage</h2>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="margin: 10px 0;">
-                                <strong>Type de pèlerinage :</strong> ${reservationData.typePelerinage.toUpperCase()}
-                            </li>
-                            <li style="margin: 10px 0;">
-                                <strong>Date de départ :</strong> ${reservationData.dateDepart}
-                            </li>
-                            <li style="margin: 10px 0;">
-                                <strong>Type de chambre :</strong> ${reservationData.chambre.type}
-                            </li>
-                            ${reservationData.besoinsSpeciaux ? `
-                            <li style="margin: 10px 0;">
-                                <strong>Besoins spéciaux :</strong> ${reservationData.besoinsSpeciaux}
-                            </li>
-                            ` : ''}
-                        </ul>
-                    </div>
-
-                    <div style="margin-top: 30px; padding: 20px; background: #f5f6fa; border-radius: 5px;">
-                        <p><strong>Prochaines étapes :</strong></p>
-                        <ol style="margin-left: 20px;">
-                            <li>Notre équipe vous contactera sous 24-48h</li>
-                            <li>Préparez vos documents de voyage</li>
-                            <li>Attendez notre confirmation pour le paiement</li>
-                        </ol>
-                    </div>
-
-                    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                        <p style="color: #7f8c8d;">Pour toute question, contactez-nous :</p>
-                        <p style="margin: 5px 0;">📞 +33 6 12 34 56 78</p>
-                        <p style="margin: 5px 0;">✉️ contact@hajj-omra-booking.com</p>
+                    <p style="margin-top: 20px;">Un conseiller vous contactera prochainement pour finaliser votre réservation.</p>
+                    
+                    <div style="margin-top: 30px;">
+                        <p>Cordialement,<br>
+                        L'équipe Hajj & Omra</p>
                     </div>
                 </div>
             `
