@@ -1,8 +1,6 @@
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 @adminEmail = raouanedev@gmail.com
 
-### ========== OFFRES ==========
-
 ### Liste des offres (GET - public)
 GET {{baseUrl}}/offres
 
@@ -15,6 +13,47 @@ Content-Type: application/json
     "titre": "Hajj 2024 - Pack Standard",
     "prix": 6000,
     "type": "hajj"
+}
+
+### Créer une offre Hajj (POST - admin)
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "titre": "Hajj 2024 - Pack Premium",
+    "prix": 8500,
+    "type": "hajj"
+}
+
+### Créer une offre Omra (POST - admin)
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}",
+    "titre": "Omra Ramadan 2024",
+    "prix": 4500,
+    "type": "omra"
+}
+
+### Modifier une offre (PUT - admin)
+PUT {{baseUrl}}/offres/6774838bd9386f8899b68596
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "titre": "Hajj 2024 - Pack Standard (Version 2)",
+    "prix": 6800,
+    "type": "hajj"
+}
+
+### Supprimer une offre (DELETE - admin)
+DELETE {{baseUrl}}/offres/6774838bd9386f8899b68596
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
 }
 
 ### Modifier une offre (PUT - admin)
@@ -34,58 +73,4 @@ Content-Type: application/json
 
 {
     "email": "{{adminEmail}}"
-}
-
-### ========== RÉSERVATIONS ==========
-
-### Rechercher les réservations par email
-GET {{baseUrl}}/pelerin/search?email=raouanedev@gmail.com
-
-### Créer une nouvelle réservation
-POST {{baseUrl}}/pelerin
-Content-Type: application/json
-
-{
-    "civilite": "M.",
-    "nom": "Doe",
-    "prenom": "John",
-    "nationalite": "Française",
-    "telephone": "0612345678",
-    "email": "john.doe@example.com",
-    "adresse": {
-        "numero": "123",
-        "rue": "Rue Example",
-        "ville": "Paris",
-        "codePostal": "75001"
-    },
-    "typePelerinage": "hajj",
-    "dateDepart": "2024-06-15",
-    "besoinsSpeciaux": "Aucun",
-    "chambre": {
-        "type": "double",
-        "supplement": 0
-    }
-}
-
-### ========== ADMIN ==========
-
-### Liste des pèlerins (admin)
-POST {{baseUrl}}/admin/list
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}"
-}
-
-### Statistiques (admin)
-POST {{baseUrl}}/admin/stats
-Content-Type: application/json
-
-{
-    "email": "{{adminEmail}}"
-}
-
-### ========== HEALTH CHECK ==========
-
-### Vérifier que le serveur est en ligne
-GET {{baseUrl}}/health 
+} 

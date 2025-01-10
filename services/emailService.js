@@ -6,7 +6,7 @@ const transporter = process.env.NODE_ENV === 'production'
         service: 'gmail',
         auth: {
             user: process.env.GMAIL_USER,
-            pass: process.env.GMAIL_APP_PASSWORD  // Mot de passe d'application
+            pass: process.env.GMAIL_APP_PASSWORD
         }
     })
     : nodemailer.createTransport({

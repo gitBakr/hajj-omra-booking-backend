@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import OffersList from './Offers/OffersList';
 import './ReservationForm.css';
 
@@ -56,11 +57,47 @@ const ReservationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!validateStep1()) {
-      alert('Veuillez remplir tous les champs obligatoires');
-      return;
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
     }
-    // Logique de soumission...
+
+    try {
+        const response = await axios.post(
+            'https://hajj-omra-booking-backend.onrender.com/pelerin',
+            formData
+        );
+        
+        console.log('Réservation créée:', response.data);
+        alert('Réservation effectuée avec succès !');
+        
+        // Reset du formulaire
+        setFormData({
+            civilite: '',
+            nom: '',
+            prenom: '',
+            nationalite: '',
+            telephone: '',
+            email: '',
+            typePelerinage: '',
+            adresse: {
+                numero: '',
+                rue: '',
+                ville: '',
+                codePostal: ''
+            },
+            besoinsSpeciaux: '',
+            chambre: {
+                type: 'quadruple',
+                supplement: 0
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert(error.response?.data?.message || 'Erreur lors de la réservation');
+    }
   };
 
   return (

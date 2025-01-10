@@ -1,5 +1,6 @@
 ### Variables globales
-@baseUrl = http://localhost:5000
+###@baseUrl = http://localhost:5000
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
 
 ### Test de santé du serveur
 GET {{baseUrl}}/health

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Pelerin = require('../../models/Pelerin');
+const Offre = require('../../models/Offre');
 
 // Middleware d'authentification admin
 const isAdmin = (req, res, next) => {
@@ -56,6 +57,29 @@ router.post('/stats', isAdmin, async (req, res) => {
     // ... code des statistiques ...
   } catch (error) {
     console.error('❌ Erreur:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Ajouter cette route pour nettoyer la DB
+router.post('/clean-db', isAdmin, async (req, res) => {
+  try {
+    console.log('🧹 Nettoyage de la base de données...');
+    
+    // Supprimer toutes les réservations
+    await Pelerin.deleteMany({});
+    console.log('✅ Toutes les réservations ont été supprimées');
+    
+    // Supprimer toutes les offres
+    await Offre.deleteMany({});
+    console.log('✅ Toutes les offres ont été supprimées');
+
+    res.json({ 
+      message: "Base de données nettoyée avec succès",
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('❌ Erreur lors du nettoyage:', error);
     res.status(500).json({ message: error.message });
   }
 });
