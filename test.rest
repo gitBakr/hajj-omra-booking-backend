@@ -1,6 +1,6 @@
 ### Variables globales
-@baseUrl = http://localhost:5000
-# @baseUrl = https://hajj-omra-booking-backend.onrender.com
+# @baseUrl = http://localhost:5000
+ @baseUrl = https://hajj-omra-booking-backend.onrender.com
 
 ### Test de santé du serveur
 GET {{baseUrl}}/health
@@ -133,5 +133,95 @@ Content-Type: application/json
             "description": "Accomplissez le cinquième pilier de l'Islam avec sérénité"
         },
         "_id": "TEST-OFFRE-001"
+    }
+}
+
+### Test Nodemailer - Debug
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Test Debug",
+    "data": {
+        "civilite": "M.",
+        "nom": "Raouane",
+        "prenom": "Mohamed",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "Hajj",
+        "dateDepart": "Du 01 Mai au 20 Juin 2025",
+        "chambre": {
+            "type": "quadruple"
+        },
+        "offreDetails": {
+            "titre": "Hajj 2024",
+            "prix": 6500,
+            "duree": "21 jours",
+            "dateDepart": "Mai 2024"
+        },
+        "_id": "DEBUG-001"
+    }
+}
+
+### Test Réservation Complète avec Offre
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Test",
+    "prenom": "Debug",
+    "email": "raouanedev@gmail.com",
+    "typePelerinage": "omra",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "offreDetails": {
+        "titre": "Hajj 2024",
+        "prix": 6500,
+        "duree": "21 jours",
+        "dateDepart": "Mai 2024"
+    }
+}
+
+### Test Email Simple
+POST {{baseUrl}}/pelerin/send-email-nodemailer
+Content-Type: application/json
+
+{
+    "to": "raouanedev@gmail.com",
+    "subject": "Test Configuration Email",
+    "data": {
+        "civilite": "M.",
+        "nom": "Test",
+        "prenom": "Config",
+        "email": "raouanedev@gmail.com",
+        "typePelerinage": "omra",
+        "offreDetails": {
+            "titre": "Test Config Email",
+            "prix": 1500,
+            "duree": "15 jours",
+            "dateDepart": "Test"
+        },
+        "_id": "TEST-CONFIG-001"
+    }
+}
+
+### Test Réservation avec Email
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Test",
+    "prenom": "Email",
+    "email": "raouanedev@gmail.com",
+    "typePelerinage": "omra",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "offreDetails": {
+        "titre": "Test Réservation Email",
+        "prix": 1500,
+        "duree": "15 jours",
+        "dateDepart": "Test"
     }
 } 
