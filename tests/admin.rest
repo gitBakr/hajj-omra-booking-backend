@@ -1,0 +1,66 @@
+### Variables globales
+# Local
+@localUrl = http://localhost:5000
+
+# Production
+@prodUrl = https://hajj-omra-booking-backend.onrender.com
+
+### Admin - Tests d'authentification (Local) ###
+
+### 1. Login Admin (Local)
+POST {{localUrl}}/admin/login
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### 2. Vérifier le statut Admin (Local)
+GET {{localUrl}}/admin/check?email=raouanedev@gmail.com
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### 3. Test Admin Auth (Local)
+POST {{localUrl}}/admin/test-auth
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### Admin - Tests d'authentification (Production) ###
+
+### 1. Login Admin (Prod)
+POST {{prodUrl}}/admin/login
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### 2. Vérifier le statut Admin (Prod)
+GET {{prodUrl}}/admin/check
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### 3. Test Admin Auth (Prod)
+POST {{prodUrl}}/admin/test-auth
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### Test Variables d'Environnement
+GET {{prodUrl}}/admin/env-check
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+} 

@@ -1,42 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const { isAdmin } = require('../../middleware/auth');
 const Pelerin = require('../../models/Pelerin');
 const Offre = require('../../models/Offre');
 
-// Middleware d'authentification admin
-const isAdmin = (req, res, next) => {
-  const ADMIN_EMAIL = 'raouanedev@gmail.com'; // Temporaire pour test
-  
-  console.log('Body reçu:', JSON.stringify(req.body, null, 2));
-  console.log('Headers reçus:', req.headers);
-  
-  const { email } = req.body;
-  console.log('Email extrait:', email);
-  console.log('Email admin attendu:', ADMIN_EMAIL);
-  console.log('Email from env:', process.env.ADMIN_EMAIL);
-  console.log('Comparaison:', email === ADMIN_EMAIL);
+// Log pour vérifier le chargement des routes
+console.log('🔄 Chargement des routes admin...');
 
-  if (!email) {
-    console.log('Email manquant dans la requête');
-    return res.status(400).json({ 
-      message: "Email requis",
-      received: req.body 
+// Route de test d'authentification admin
+router.post('/test-auth', isAdmin, (req, res) => {
+    console.log('📝 Test auth appelé');
+    res.json({ 
+        success: true, 
+        message: "Authentification admin réussie",
+        email: req.body.email
     });
-  }
-
-  if (email !== ADMIN_EMAIL) {
-    console.log('Email incorrect');
-    return res.status(403).json({ 
-      message: "Accès non autorisé",
-      receivedEmail: email,
-      expectedEmail: ADMIN_EMAIL,
-      envEmail: process.env.ADMIN_EMAIL
-    });
-  }
-
-  console.log('Authentification admin réussie');
-  next();
-};
+});
 
 // POST - Liste des pèlerins (admin)
 router.post('/list', isAdmin, async (req, res) => {
@@ -83,5 +62,78 @@ router.post('/clean-db', isAdmin, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// Route de login admin
+router.post('/login', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        if (email !== process.env.ADMIN_EMAIL) {
+            return res.status(403).json({ 
+                success: false,
+                message: "Accès non autorisé" 
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: "Login admin réussi",
+            email: email
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Route pour vérifier les variables d'environnement
+router.get('/env-check', async (req, res) => {
+    try {
+        console.log('🔍 Variables d\'environnement:', {
+            NODE_ENV: process.env.NODE_ENV,
+            ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+            hasAdminEmail: !!process.env.ADMIN_EMAIL
+        });
+
+        res.json({
+            success: true,
+            env: process.env.NODE_ENV,
+            adminEmail: process.env.ADMIN_EMAIL || 'Non configuré',
+            isConfigured: !!process.env.ADMIN_EMAIL
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Route pour vérifier le statut admin
+router.get('/check', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Log pour debug
+        console.log('🔍 Check admin status:', {
+            receivedEmail: email,
+            adminEmail: process.env.ADMIN_EMAIL,
+            isMatch: email === process.env.ADMIN_EMAIL
+        });
+
+        // Vérifier si c'est l'admin
+        const isAdmin = email === process.env.ADMIN_EMAIL;
+
+        res.json({
+            success: true,
+            isAdmin: isAdmin,
+            email: email
+        });
+    } catch (error) {
+        console.error('❌ Erreur check admin:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Log des routes configurées
+console.log('📋 Routes admin configurées:', router.stack.map(r => {
+    if (r.route) return `${Object.keys(r.route.methods)[0].toUpperCase()} /admin${r.route.path}`;
+}).filter(Boolean));
 
 module.exports = router; 
