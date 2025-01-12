@@ -78,18 +78,47 @@ router.post('/', isAdmin, async (req, res) => {
 router.put('/:id', isAdmin, async (req, res) => {
     try {
         const offreData = req.body.offre;
-        const updatedOffre = await Offre.findOneAndUpdate(
-            { id: req.params.id },
-            offreData,
-            { new: true }
-        );
-        if (!updatedOffre) {
-            return res.status(404).json({ message: "Offre non trouvée" });
+        
+        // Logs de débogage
+        console.log('🔍 Tentative de mise à jour:', {
+            id: req.params.id,
+            offreData: offreData
+        });
+
+        // Vérifier si l'offre existe d'abord
+        const existingOffer = await Offre.findById(req.params.id);
+        if (!existingOffer) {
+            console.log('❌ Offre non trouvée avec ID:', req.params.id);
+            return res.status(404).json({ 
+                message: "Offre non trouvée",
+                id: req.params.id
+            });
         }
-        res.json(updatedOffre);
+
+        // Mise à jour avec les nouveaux champs
+        const updatedOffre = await Offre.findByIdAndUpdate(
+            req.params.id,
+            { $set: offreData },  // Utiliser $set pour la mise à jour
+            { 
+                new: true,        // Retourner le document mis à jour
+                runValidators: true  // Exécuter les validateurs
+            }
+        );
+
+        console.log('✅ Offre mise à jour:', updatedOffre);
+        
+        res.json({
+            success: true,
+            message: "Offre mise à jour avec succès",
+            data: updatedOffre
+        });
     } catch (error) {
         console.error('❌ Erreur mise à jour:', error);
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ 
+            success: false,
+            message: "Erreur lors de la mise à jour",
+            error: error.message 
+        });
     }
 });
 

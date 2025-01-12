@@ -1,10 +1,44 @@
 ### Variables globales
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 
-### 1. Vérifier les offres existantes
+### 1. Vérifier l'offre existante
 GET {{baseUrl}}/offres
 
-### 2. Nettoyer la base de données
+### 2. Modifier l'offre avec le bon ID MongoDB
+PUT {{baseUrl}}/offres/678324934c4982186aa07cf7
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "offre": {
+        "titre": "HAJJ 2025 - Package Premium",
+        "prix": 7490,
+        "type": "hajj",
+        "duree": "21 jours",
+        "description": "Vivez une expérience spirituelle unique avec notre package premium tout inclus",
+        "image": "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=800",
+        "details": {
+            "depart": "Paris Charles de Gaulle",
+            "hotel": "Hôtel Swissotel Al Maqam 5* - Vue sur Haram",
+            "included": [
+                "Vol aller-retour en classe affaires",
+                "Transferts privés en véhicule luxe",
+                "Hébergement 5* en pension complète",
+                "Accompagnement spirituel personnalisé",
+                "Guide francophone expert",
+                "Visa Hajj et assurance premium inclus",
+                "Kit du pèlerin exclusif"
+            ],
+            "notIncluded": [
+                "Dépenses personnelles",
+                "Services additionnels à l'hôtel"
+            ],
+            "programme": "Programme VIP incluant tous les rituels du Hajj avec un accès privilégié"
+        }
+    }
+}
+
+### 3. Nettoyer la base de données
 POST {{baseUrl}}/admin/clean-db
 Content-Type: application/json
 
@@ -12,7 +46,7 @@ Content-Type: application/json
     "email": "raouanedev@gmail.com"
 }
 
-### 3. Créer l'offre HAJJ 2025
+### 4. Créer l'offre HAJJ 2025
 POST {{baseUrl}}/offres
 Content-Type: application/json
 
@@ -46,5 +80,8 @@ Content-Type: application/json
     }
 }
 
-### 4. Vérifier la création
+### 5. Vérifier la création
+GET {{baseUrl}}/offres
+
+### 6. Vérifier la modification
 GET {{baseUrl}}/offres
