@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const offre = await Offre.findOne({ id: req.params.id });
+        const offre = await Offre.findById(req.params.id);
         if (!offre) {
             return res.status(404).json({ message: "Offre non trouvée" });
         }
@@ -95,7 +95,7 @@ router.put('/:id', isAdmin, async (req, res) => {
 
 router.delete('/:id', isAdmin, async (req, res) => {
     try {
-        const deletedOffre = await Offre.findOneAndDelete({ id: req.params.id });
+        const deletedOffre = await Offre.findByIdAndDelete(req.params.id);
         if (!deletedOffre) {
             return res.status(404).json({ message: "Offre non trouvée" });
         }
