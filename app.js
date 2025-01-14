@@ -16,6 +16,7 @@ const heroRoutes = require('./routes/components/hero.routes');
 const offreRoutes = require('./routes/components/offres.routes');
 const pelerinRoutes = require('./routes/components/pelerin.routes');
 const adminRoutes = require('./routes/components/admin.routes');
+const uploadRoutes = require('./routes/components/upload.routes');
 
 // Configuration des routes avec logs
 console.log('📍 Configuration des routes hero...');
@@ -25,6 +26,10 @@ console.log('📍 Configuration des autres routes...');
 app.use('/offres', offreRoutes);
 app.use('/pelerins', pelerinRoutes);
 app.use('/admin', adminRoutes);
+app.use('/upload', uploadRoutes);
+
+// Servir les fichiers statiques
+app.use('/uploads', express.static('uploads'));
 
 // Log des routes configurées
 console.log('📋 Routes disponibles:');
