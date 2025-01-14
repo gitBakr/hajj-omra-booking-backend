@@ -6,8 +6,14 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log('📥 Requête reçue:', req.method, req.url);
+  console.log('📦 Headers:', req.headers);
+  console.log('📝 Body:', req.body);
+  next();
+});
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
 // Import des routes
@@ -28,7 +34,7 @@ console.log('✅ Routes hero chargées');
 
 // Autres routes
 app.use('/offres', offreRoutes);
-app.use('/pelerins', pelerinRoutes);
+app.use('/pelerin', pelerinRoutes);
 app.use('/admin', adminRoutes);
 app.use('/upload', uploadRoutes);
 

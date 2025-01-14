@@ -1,0 +1,35 @@
+
+
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+
+### Créer une nouvelle réservation
+POST {{baseUrl}}/pelerin
+Content-Type: application/json
+
+{
+    "civilite": "M.",
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "nationalite": "Française",
+    "telephone": "0612345678",
+    "email": "jean.dupont@example.com",
+    "typePelerinage": "hajj"
+}
+
+### Rechercher des réservations par email
+GET {{baseUrl}}/pelerin/search?email=jean.dupont@example.com
+
+### Envoyer un email de confirmation
+POST {{baseUrl}}/pelerin/send-email
+Content-Type: application/json
+
+{
+    "to": "jean.dupont@example.com",
+    "subject": "Confirmation de réservation",
+    "data": {
+        "nom": "Dupont",
+        "typePelerinage": "hajj",
+        "dateDepart": "2023-12-01",
+        "chambre": "double"
+    }
+}
