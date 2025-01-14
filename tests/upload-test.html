@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Upload</title>
+</head>
+<body>
+    <h1>Test Upload d'image</h1>
+        <form action="http://localhost:5000/upload/image" method="POST" enctype="multipart/form-data">
+        <input type="email" name="email" value="raouanedev@gmail.com" hidden>
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>

@@ -4,7 +4,7 @@ const upload = require('../../services/uploadService');
 const { isAdmin } = require('../../middleware/auth');
 
 // Upload une image
-router.post('/image', isAdmin, upload.single('image'), async (req, res) => {
+router.post('/image', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'Aucune image fournie' });
@@ -23,4 +23,4 @@ router.post('/image', isAdmin, upload.single('image'), async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;

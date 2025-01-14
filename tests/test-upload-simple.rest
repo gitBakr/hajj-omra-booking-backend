@@ -1,0 +1,17 @@
+### Test Upload Simple
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+
+POST {{baseUrl}}/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+Authorization: Bearer your-token-here
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="email"
+
+raouanedev@gmail.com
+------WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/test.jpg
+------WebKitFormBoundary--

@@ -8,6 +8,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Import des routes
 console.log('🔄 Chargement des routes...');
@@ -16,6 +17,7 @@ const heroRoutes = require('./routes/components/hero.routes');
 const offreRoutes = require('./routes/components/offres.routes');
 const pelerinRoutes = require('./routes/components/pelerin.routes');
 const adminRoutes = require('./routes/components/admin.routes');
+const uploadRoutes = require('./routes/components/upload.routes');
 
 // Configuration des routes avec logs
 console.log('📍 Configuration des routes...');
@@ -28,6 +30,7 @@ console.log('✅ Routes hero chargées');
 app.use('/offres', offreRoutes);
 app.use('/pelerins', pelerinRoutes);
 app.use('/admin', adminRoutes);
+app.use('/upload', uploadRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -56,4 +59,4 @@ mongoose.connect(process.env.MONGODB_URI)
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-}); 
+});
