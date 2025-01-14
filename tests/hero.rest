@@ -1,0 +1,41 @@
+### Variables globales
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+
+### 1. Créer un hero
+POST {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "hero": {
+        "title": "HAJJ & OMRA 2025",
+        "subtitle": "Voyagez vers les lieux saints",
+        "backgroundImage": "https://example.com/hero.jpg",
+        "buttonText": "Voir nos offres"
+    }
+}
+
+### 2. Obtenir le hero
+GET {{baseUrl}}/hero
+
+### 3. Modifier le hero
+PUT {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "hero": {
+        "title": "HAJJ & OMRA 2025 - Mise à jour",
+        "subtitle": "Réservez votre voyage spirituel",
+        "backgroundImage": "https://example.com/new-hero.jpg",
+        "buttonText": "Réserver maintenant"
+    }
+}
+
+### 4. Supprimer le hero
+DELETE {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+} 

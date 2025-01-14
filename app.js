@@ -1,7 +1,7 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
@@ -18,42 +18,38 @@ const pelerinRoutes = require('./routes/components/pelerin.routes');
 const adminRoutes = require('./routes/components/admin.routes');
 
 // Configuration des routes avec logs
-console.log('📍 Configuration des routes...');
-
-// Hero routes
+console.log('📍 Configuration des routes hero...');
 app.use('/hero', heroRoutes);
-console.log('✅ Routes hero chargées');
 
-// Autres routes
+console.log('📍 Configuration des autres routes...');
 app.use('/offres', offreRoutes);
 app.use('/pelerins', pelerinRoutes);
 app.use('/admin', adminRoutes);
 
+// Log des routes configurées
+console.log('📋 Routes disponibles:');
+app._router.stack.forEach((r) => {
+    if (r.route && r.route.path) {
+        console.log(`${Object.keys(r.route.methods).join(',')} ${r.route.path}`);
+    } else if (r.name === 'router') {
+        console.log(`Router: ${r.regexp}`);
+        r.handle.stack.forEach((layer) => {
+            if (layer.route) {
+                const methods = Object.keys(layer.route.methods).join(',');
+                console.log(`- ${methods} ${layer.route.path}`);
+            }
+        });
+    }
+});
+
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log('✅ Connecté à MongoDB');
-        
-        // Log toutes les routes après connexion
-        console.log('\n📋 Routes disponibles:');
-        app._router.stack
-            .filter(r => r.route || r.name === 'router')
-            .forEach(r => {
-                if (r.route) {
-                    console.log(`${Object.keys(r.route.methods)} ${r.route.path}`);
-                } else {
-                    console.log(`\nRouter ${r.regexp}:`);
-                    r.handle.stack
-                        .filter(l => l.route)
-                        .forEach(l => {
-                            console.log(`- ${Object.keys(l.route.methods)} ${l.route.path}`);
-                        });
-                }
-            });
-    })
+    .then(() => console.log('✅ Connecté à MongoDB'))
     .catch(err => console.error('❌ Erreur MongoDB:', err));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-}); 
+});
+
+module.exports = app; 

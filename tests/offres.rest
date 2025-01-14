@@ -1,10 +1,10 @@
 ### Variables globales
 @baseUrl = https://hajj-omra-booking-backend.onrender.com
 
-### 1. Vérifier l'offre existante
+### 1. Vérifier les offres existantes
 GET {{baseUrl}}/offres
 
-### 2. Modifier l'offre avec le bon ID MongoDB
+### 2. Modifier l'offre avec le bon ID
 PUT {{baseUrl}}/offres/678324934c4982186aa07cf7
 Content-Type: application/json
 

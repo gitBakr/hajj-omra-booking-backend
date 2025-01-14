@@ -1,6 +1,7 @@
 ### Variables globales
 # @baseUrl = http://localhost:5000
- @baseUrl = https://hajj-omra-booking-backend.onrender.com
+# @baseUrl = http://localhost:5173
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
 
 ### Test de santé du serveur
 GET {{baseUrl}}/health
@@ -224,4 +225,163 @@ Content-Type: application/json
         "duree": "15 jours",
         "dateDepart": "Test"
     }
+}
+
+### Admin - Liste des pèlerins
+POST {{baseUrl}}/admin/list
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### Offres - CRUD Tests ###
+
+### 1. Créer une offre Hajj (Admin)
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "offre": {
+        "id": "hajj-2024",
+        "titre": "Hajj 2024",
+        "type": "hajj",
+        "description": "Accomplissez le cinquième pilier de l'Islam avec sérénité",
+        "prix": 6500,
+        "duree": "21 jours",
+        "image": "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=800",
+        "details": {
+            "depart": "Paris Charles de Gaulle",
+            "hotel": "Hôtel Swissotel Al Maqam 5*",
+            "included": [
+                "Vol aller-retour",
+                "Transferts en bus climatisé",
+                "Hébergement en pension complète",
+                "Accompagnement spirituel",
+                "Guide francophone",
+                "Visa Hajj"
+            ],
+            "notIncluded": [
+                "Assurance voyage",
+                "Dépenses personnelles"
+            ],
+            "programme": "Rituel complet du Hajj, séjour à Mina, Mont Arafat, Muzdalifah"
+        }
+    }
+}
+
+### 2. Créer une offre Omra (Admin)
+POST {{baseUrl}}/offres
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "offre": {
+        "id": "omra-ramadan-2024",
+        "titre": "Omra Ramadan 2024",
+        "type": "omra",
+        "description": "Vivez le Ramadan dans les lieux saints",
+        "prix": 1500,
+        "duree": "15 jours",
+        "image": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800",
+        "details": {
+            "depart": "Paris Orly",
+            "hotel": "Hôtel Anjum 5*",
+            "included": [
+                "Vol aller-retour",
+                "Transferts privés",
+                "Hébergement en pension complète",
+                "Guide francophone"
+            ]
+        }
+    }
+}
+
+### 2. Lire toutes les offres
+GET {{baseUrl}}/offres
+
+### 3. Lire une offre par ID
+GET {{baseUrl}}/offres/hajj-2024
+
+### 4. Mettre à jour une offre (Admin)
+PUT {{baseUrl}}/offres/hajj-2024
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "offre": {
+        "titre": "Hajj 2024",
+        "prix": 6800,
+        "type": "hajj",
+        "duree": "21 jours",
+        "description": "Accomplissez le cinquième pilier de l'Islam avec sérénité",
+        "details": {
+            "depart": "Paris Charles de Gaulle",
+            "hotel": "Hôtel Swissotel Al Maqam 5*",
+            "included": [
+                "Vol aller-retour",
+                "Transferts en bus climatisé VIP",
+                "Hébergement en pension complète",
+                "Accompagnement spirituel",
+                "Guide francophone expérimenté",
+                "Visa Hajj inclus"
+            ]
+        }
+    }
+}
+
+### 5. Supprimer une offre (Admin)
+DELETE {{baseUrl}}/offres/hajj-2024
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### Test Admin Auth
+POST {{baseUrl}}/admin/test-auth
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
+}
+
+### 2. Get Hero
+GET {{baseUrl}}/hero
+
+### 3. Create Hero (Admin)
+POST {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "hero": {
+        "title": "HAJJ & OMRA 2025",
+        "subtitle": "Voyagez vers les lieux saints",
+        "backgroundImage": "https://example.com/hero.jpg",
+        "buttonText": "Voir nos offres"
+    }
+}
+
+### 4. Update Hero (Admin)
+PUT {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com",
+    "hero": {
+        "title": "HAJJ & OMRA 2025 - Mise à jour",
+        "subtitle": "Réservez votre voyage spirituel",
+        "backgroundImage": "https://example.com/new-hero.jpg",
+        "buttonText": "Réserver maintenant"
+    }
+}
+
+### 5. Delete Hero (Admin)
+DELETE {{baseUrl}}/hero
+Content-Type: application/json
+
+{
+    "email": "raouanedev@gmail.com"
 } 
