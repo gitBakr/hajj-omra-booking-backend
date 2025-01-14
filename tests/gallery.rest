@@ -1,0 +1,25 @@
+### Upload Image
+@baseUrl = http://localhost:5000
+POST {{baseUrl}}/gallery
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+Authorization: Bearer your-token-here
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="description"
+
+Test image description
+------WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/test.jpg
+------WebKitFormBoundary--
+
+### Get All Images
+GET {{baseUrl}}/gallery
+
+### Get Single Image
+GET {{baseUrl}}/gallery/:id
+
+### Delete Image
+DELETE {{baseUrl}}/gallery/:id

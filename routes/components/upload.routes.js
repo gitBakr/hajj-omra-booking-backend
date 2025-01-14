@@ -4,8 +4,15 @@ const upload = require('../../services/uploadService');
 const { isAdmin } = require('../../middleware/auth');
 
 // Upload une image
-router.post('/image', upload.single('image'), async (req, res) => {
+router.post('/image', (req, res, next) => {
+    console.log('📥 Requête reçue avant multer');
+    console.log('📦 Headers:', req.headers);
+    console.log('📝 Body:', req.body);
+    next();
+}, upload.single('image'), async (req, res) => {
     try {
+        console.log('📤 Requête après multer');
+        console.log('📄 Fichier:', req.file);
         if (!req.file) {
             return res.status(400).json({ message: 'Aucune image fournie' });
         }

@@ -1,6 +1,6 @@
 ### Upload Image
 ### Variables globales
-@baseUrl = https://hajj-omra-booking-backend.onrender.com
+@baseUrl = http://localhost:5000
 POST {{baseUrl}}/upload/image
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 Authorization: Bearer your-token-here
@@ -13,5 +13,5 @@ raouanedev@gmail.com
 Content-Disposition: form-data; name="image"; filename="hero.jpg"
 Content-Type: image/jpeg
 
-< ./test-images/hero.jpg
-------WebKitFormBoundary-- 
+< c:/Users/raoua/cursorproject/hajj-backend-temp/test-images/hero.jpg
+------WebKitFormBoundary--

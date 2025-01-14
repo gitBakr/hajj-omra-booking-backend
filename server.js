@@ -24,9 +24,13 @@ const offreRoutes = require('./routes/components/offres.routes');
 const pelerinRoutes = require('./routes/components/pelerin.routes');
 const adminRoutes = require('./routes/components/admin.routes');
 const uploadRoutes = require('./routes/components/upload.routes');
+const galleryRoutes = require('./routes/components/gallery.routes');
 
 // Configuration des routes avec logs
 console.log('📍 Configuration des routes...');
+
+// Gallery routes
+app.use('/gallery', galleryRoutes);
 
 // Hero routes
 app.use('/hero', heroRoutes);
