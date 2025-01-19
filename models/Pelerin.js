@@ -55,6 +55,11 @@ const pelerinSchema = new mongoose.Schema({
   dateInscription: {
     type: Date,
     default: Date.now
+  },
+  genre: {
+    type: String,
+    required: true,
+    enum: ['homme', 'femme']
   }
 });
 
