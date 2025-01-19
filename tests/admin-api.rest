@@ -1,0 +1,46 @@
+@baseUrl = https://hajj-omra-booking-backend.onrender.com
+@adminEmail = raouanedev@gmail.com
+
+### 1. Vérification santé du serveur
+GET {{baseUrl}}/health
+
+### 2. Vérification des variables d'environnement
+GET {{baseUrl}}/admin/env-check
+
+### 3. Test authentification admin
+POST {{baseUrl}}/admin/test-auth
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### 4. Test statistiques par type
+POST {{baseUrl}}/admin/stats/types
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### 5. Test liste des pèlerins
+POST {{baseUrl}}/admin/list
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+}
+
+### 6. Test avec email invalide (doit échouer)
+POST {{baseUrl}}/admin/stats/types
+Content-Type: application/json
+
+{
+    "email": "wrong@email.com"
+}
+
+### 7. Test sans email (doit échouer)
+POST {{baseUrl}}/admin/stats/types
+Content-Type: application/json
+
+{} 

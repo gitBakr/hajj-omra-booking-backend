@@ -1,139 +1,101 @@
 const express = require('express');
 const router = express.Router();
 const { isAdmin } = require('../../middleware/auth');
-const Pelerin = require('../../models/Pelerin');
-const Offre = require('../../models/Offre');
+const adminController = require('../../controllers/adminController');
+const statsController = require('../../controllers/statsController');
+const mongoose = require('mongoose');
 
-// Log pour vérifier le chargement des routes
+// Log de démarrage
 console.log('🔄 Chargement des routes admin...');
 
-// Route de test d'authentification admin
+// Routes d'authentification
+router.post('/login', adminController.login);
 router.post('/test-auth', isAdmin, (req, res) => {
-    console.log('📝 Test auth appelé');
     res.json({ 
         success: true, 
-        message: "Authentification admin réussie",
-        email: req.body.email
+        message: "Authentification admin réussie" 
     });
 });
 
-// POST - Liste des pèlerins (admin)
-router.post('/list', isAdmin, async (req, res) => {
-  try {
-    console.log('Récupération de la liste des pèlerins');
-    const pelerins = await Pelerin.find().sort({ dateInscription: -1 });
-    console.log('Nombre de pèlerins trouvés:', pelerins.length);
-    res.json(pelerins);
-  } catch (error) {
-    console.error('Erreur:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// POST - Statistiques (admin)
-router.post('/stats', isAdmin, async (req, res) => {
-  try {
-    // ... code des statistiques ...
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Ajouter cette route pour nettoyer la DB
-router.post('/clean-db', isAdmin, async (req, res) => {
-  try {
-    console.log('🧹 Nettoyage de la base de données...');
-    
-    // Supprimer toutes les réservations
-    await Pelerin.deleteMany({});
-    console.log('✅ Toutes les réservations ont été supprimées');
-    
-    // Supprimer toutes les offres
-    await Offre.deleteMany({});
-    console.log('✅ Toutes les offres ont été supprimées');
-
-    res.json({ 
-      message: "Base de données nettoyée avec succès",
-      timestamp: new Date()
-    });
-  } catch (error) {
-    console.error('❌ Erreur lors du nettoyage:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Route de login admin
-router.post('/login', async (req, res) => {
+// Routes de gestion
+router.post('/list', isAdmin, adminController.getPelerins);
+router.post('/clean-db', isAdmin, adminController.cleanDB);
+router.post('/stats/types', isAdmin, async (req, res) => {
     try {
-        const { email } = req.body;
-        
-        if (email !== process.env.ADMIN_EMAIL) {
-            return res.status(403).json({ 
-                success: false,
-                message: "Accès non autorisé" 
-            });
-        }
-
-        res.json({ 
-            success: true,
-            message: "Login admin réussi",
-            email: email
+        console.log('📊 Route /stats/types appelée:', {
+            body: req.body,
+            method: req.method,
+            path: req.path
         });
+        await statsController.getStatsByType(req, res);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('❌ Erreur stats:', error);
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        });
     }
 });
 
-// Route pour vérifier les variables d'environnement
+// Route de vérification d'environnement
 router.get('/env-check', async (req, res) => {
     try {
         console.log('🔍 Variables d\'environnement:', {
             NODE_ENV: process.env.NODE_ENV,
             ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-            hasAdminEmail: !!process.env.ADMIN_EMAIL
+            hasAdminEmail: !!process.env.ADMIN_EMAIL,
+            mongodbStatus: mongoose.connection.readyState
         });
 
         res.json({
             success: true,
             env: process.env.NODE_ENV,
-            adminEmail: process.env.ADMIN_EMAIL || 'Non configuré',
-            isConfigured: !!process.env.ADMIN_EMAIL
+            adminConfigured: !!process.env.ADMIN_EMAIL,
+            timestamp: new Date(),
+            serverStatus: {
+                uptime: process.uptime(),
+                memoryUsage: process.memoryUsage(),
+                nodeVersion: process.version
+            }
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('❌ Erreur env-check:', error);
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        });
     }
 });
 
-// Route pour vérifier le statut admin
+// Route de vérification admin
 router.get('/check', async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email } = req.query;
         
-        // Log pour debug
         console.log('🔍 Check admin status:', {
             receivedEmail: email,
             adminEmail: process.env.ADMIN_EMAIL,
             isMatch: email === process.env.ADMIN_EMAIL
         });
 
-        // Vérifier si c'est l'admin
-        const isAdmin = email === process.env.ADMIN_EMAIL;
-
         res.json({
             success: true,
-            isAdmin: isAdmin,
+            isAdmin: email === process.env.ADMIN_EMAIL,
             email: email
         });
     } catch (error) {
         console.error('❌ Erreur check admin:', error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        });
     }
 });
 
 // Log des routes configurées
-console.log('📋 Routes admin configurées:', router.stack.map(r => {
-    if (r.route) return `${Object.keys(r.route.methods)[0].toUpperCase()} /admin${r.route.path}`;
-}).filter(Boolean));
+console.log('📋 Routes admin configurées:', router.stack
+    .filter(r => r.route)
+    .map(r => `${Object.keys(r.route.methods)[0].toUpperCase()} ${r.route.path}`)
+);
 
 module.exports = router; 

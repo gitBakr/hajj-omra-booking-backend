@@ -1,0 +1,13 @@
+@prodUrl = https://hajj-omra-booking-backend.onrender.com
+@adminEmail = raouanedev@gmail.com
+
+### 1. Test santé production
+GET {{prodUrl}}/health
+
+### 2. Test stats production
+POST {{prodUrl}}/admin/stats/types
+Content-Type: application/json
+
+{
+    "email": "{{adminEmail}}"
+} 
